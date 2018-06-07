@@ -2,6 +2,32 @@ import React, { Component } from 'react';
 import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, View, Left, Body, Right, Title } from 'native-base';
 import { createSwitchNavigator } from 'react-navigation';
 
+export class FooterButton extends Component {
+
+	render() {
+		return (
+			<Button vertical active={this.props.active} onPress={() => this.props.navigation.navigate(this.props.tabLink)}>
+				<Icon active={this.props.active} name={this.props.icon} />
+				<Text>{this.props.text}</Text>
+			</Button>
+		);
+
+	}
+}
+
+export class FooterTabNav extends Component {
+	render() {
+		return (
+			<FooterTab>
+				<FooterButton active={this.props.active=="Timer"} 	tabLink="Timer" icon="timer" text="Timer" navigation={this.props.navigation} />
+				<FooterButton active={this.props.active=="Stats"} 	tabLink="Stats" icon="stats" text="Stats" navigation={this.props.navigation} />
+				<FooterButton active={this.props.active=="Labels"} 	tabLink="Labels" icon="pricetags" text="Labels" navigation={this.props.navigation} />
+				<FooterButton active={this.props.active=="More"} 	tabLink="More" icon="menu" text="More" navigation={this.props.navigation} />
+			</FooterTab>
+		);
+	}
+}
+
 export class HeaderTitle extends Component {
   render() {
     return (
@@ -18,7 +44,7 @@ export class HeaderTitle extends Component {
   }
 }
 
-export class Apps extends Component {
+export class Timer extends Component {
 
 	static navigationOptions = {
 		header: null,
@@ -35,33 +61,14 @@ export class Apps extends Component {
 					</View>
 				</Content>
 				<Footer>
-					<FooterTab>
-						<Button vertical active onPress={() => this.props.navigation.navigate('Home')}>
-							<Icon active name="timer" />
-							<Text>Timer</Text>
-						</Button>
-						<Button vertical onPress={() => this.props.navigation.navigate('Details')}>
-							<Icon name="stats" />
-							{/* <Icon type="FontAwesome" name="home" /> */}
-							<Text>Stats</Text>
-						</Button>
-						<Button vertical>
-							{/* <Icon type="FontAwesome" name="tags" /> */}
-							<Icon name="pricetags" />
-							<Text>Labels</Text>
-						</Button>
-						<Button vertical>
-							<Icon name="options" />
-							<Text>Settings</Text>
-						</Button>
-					</FooterTab>
+					<FooterTabNav active="Timer" navigation={this.props.navigation}/>
 				</Footer>
 			</Container>
 		);
 	}
 }
 
-export class Camera extends Component {
+export class Stats extends Component {
 
 	static navigationOptions = {
 		header: null,
@@ -70,47 +77,90 @@ export class Camera extends Component {
 	render() {
 		return (
 			<Container>
-				<Header />
+				<HeaderTitle text="Statistics" />
 				<Content />
 				<Footer>
-					<FooterTab>
-						<Button vertical onPress={() => this.props.navigation.navigate('Home')}>
-							<Icon name="timer" />
-							<Text>Timer</Text>
-						</Button>
-						<Button vertical active onPress={() => this.props.navigation.navigate('Details')}>
-							<Icon active name="stats" />
-							{/* <Icon type="FontAwesome" name="home" /> */}
-							<Text>Stats</Text>
-						</Button>
-						<Button vertical>
-							{/* <Icon type="FontAwesome" name="tags" /> */}
-							<Icon name="pricetags" />
-							<Text>Labels</Text>
-						</Button>
-						<Button vertical>
-							<Icon name="options" />
-							<Text>Settings</Text>
-						</Button>
-					</FooterTab>
+					<FooterTabNav active="Stats" navigation={this.props.navigation}/>
 				</Footer>
 			</Container>
 		);
 	}
 }
 
-const RootStack = createSwitchNavigator(
+export class Labels extends Component {
+
+	static navigationOptions = {
+		header: null,
+	};
+
+	render() {
+		return (
+			<Container>
+				<HeaderTitle text="Labels" />
+				<Content />
+				<Footer>
+					<FooterTabNav active="Labels" navigation={this.props.navigation}/>
+				</Footer>
+			</Container>
+		);
+	}
+}
+
+export class More extends Component {
+
+	static navigationOptions = {
+		header: null,
+	};
+
+	render() {
+		return (
+			<Container>
+				<HeaderTitle text="More" />
+				<Content />
+				<Footer>
+					<FooterTabNav active="More" navigation={this.props.navigation}/>
+				</Footer>
+			</Container>
+		);
+	}
+}
+
+const TabNavFooter = createSwitchNavigator(
 	{
-		Home: { screen: Apps },
-		Details: { screen: Camera },
+		Timer: { screen: Timer },
+		Stats: { screen: Stats },
+		Labels: { screen: Labels },
+		More: { screen: More },
 	},
 	{
-		initialRouteName: 'Home',
+		initialRouteName: 'Timer',
 	},
 );
 
 export default class App extends React.Component {
 	render() {
-		return <RootStack />;
+		return <TabNavFooter />;
 	}
 }
+
+
+{/* <Footer>
+	<FooterTab>
+		<Button vertical onPress={() => this.props.navigation.navigate('Timer')}>
+			<Icon name="timer" />
+			<Text>Timer</Text>
+		</Button>
+		<Button vertical active onPress={() => this.props.navigation.navigate('Stats')}>
+			<Icon active name="stats" />
+			<Text>Stats</Text>
+		</Button>
+		<Button vertical>
+			<Icon name="pricetags" />
+			<Text>Labels</Text>
+		</Button>
+		<Button vertical>
+			<Icon name="menu" />
+			<Text>More</Text>
+		</Button>
+	</FooterTab>
+</Footer> */}
