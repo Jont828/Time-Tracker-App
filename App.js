@@ -46,7 +46,7 @@ export class HeaderTitle extends Component {
   }
 }
 
-const styles = StyleSheet.create({
+const stopwatchStyles = StyleSheet.create({
 	container: {
 		flex: 1,
 	},
@@ -132,15 +132,19 @@ const styles = StyleSheet.create({
 	stopBtn: {
 		color: 'red'
 	},
+
+	lapsWrapper: {
+		flex: 1,
+	}
 });
 
-let laps = [
-	{ name: 'Lap 1', value: '00.00.01' },
-	{ name: 'Lap 2', value: '00.00.02' },
-	{ name: 'Lap 3', value: '00.00.03' },
-	{ name: 'Lap 4', value: '00.00.04' },
-	{ name: 'Lap 5', value: '00.00.05' },
-];
+// let laps = [
+// 	{ name: 'Lap 1', value: '00.00.01' },
+// 	{ name: 'Lap 2', value: '00.00.02' },
+// 	{ name: 'Lap 3', value: '00.00.03' },
+// 	{ name: 'Lap 4', value: '00.00.04' },
+// 	{ name: 'Lap 5', value: '00.00.05' },
+// ];
 let ds = new ListView.DataSource({
 	rowHasChanged: (row1, row2) => row1 !== row2,
 });
@@ -151,8 +155,10 @@ class Stopwatch extends Component {
 	constructor(props) {
 		super(props);
 
+		// laps = [];
 		this.state = {
-			dataSource: ds.cloneWithRows(laps),
+			lapList: [],
+			dataSource: ds.cloneWithRows([]),
 			isRunning: false,
 			mainTimer: null,
 			lapTimer: null,
@@ -163,14 +169,14 @@ class Stopwatch extends Component {
 
 	_renderLaps() {
 		return (
-			<View style={styles.lapsWrapper}>
+			<View style={stopwatchStyles.lapsWrapper}>
 				<ListView
 					enableEmptySections={true}
 					dataSource={this.state.dataSource}
 					renderRow={ (rowData) => (
-						<View style={styles.lapRow}>
-							<Text style={styles.lapNumber}>{rowData.name}</Text>
-							<Text style={styles.lapNumber}>{rowData.value}</Text>
+						<View style={stopwatchStyles.lapRow}>
+							<Text style={stopwatchStyles.lapNumber}>{rowData.name}</Text>
+							<Text style={stopwatchStyles.lapNumber}>{rowData.value}</Text>
 						</View>
 					)}
 				/>
@@ -180,10 +186,10 @@ class Stopwatch extends Component {
 
 	_renderTimers() {
 		return (
-			<View style={styles.timerWrapper}>
-				<View style={styles.timerWrapperInner}>
-					<Text style={styles.lapTimer}>{ TimeFormatter(this.state.lapTimer) }</Text>
-					<Text style={styles.mainTimer}>{ TimeFormatter(this.state.mainTimer) }</Text>
+			<View style={stopwatchStyles.timerWrapper}>
+				<View style={stopwatchStyles.timerWrapperInner}>
+					<Text style={stopwatchStyles.lapTimer}>{ TimeFormatter(this.state.lapTimer) }</Text>
+					<Text style={stopwatchStyles.mainTimer}>{ TimeFormatter(this.state.mainTimer) }</Text>
 				</View>
 			</View>
 		);
@@ -191,12 +197,12 @@ class Stopwatch extends Component {
 
 	_renderButtons() {
 		return(
-			<View style={styles.buttonWrapper}>
-				<TouchableHighlight underlayColor='#777' onPress={this.handleLapReset.bind(this)} style={styles.button}>
+			<View style={stopwatchStyles.buttonWrapper}>
+				<TouchableHighlight underlayColor='#777' onPress={this.handleLapReset.bind(this)} style={stopwatchStyles.button}>
 					<Text>{ (this.state.mainTimerStart && !this.state.isRunning) ? 'Reset' : 'Lap'}</Text>
 				</TouchableHighlight>
-				<TouchableHighlight underlayColor='#ddd' onPress={this.handleStartStop.bind(this)} style={styles.button}>
-					<Text style={[styles.startBtn, this.state.isRunning && styles.stopBtn]}>{this.state.isRunning ? 'Stop' : 'Start'}</Text>
+				<TouchableHighlight underlayColor='#ddd' onPress={this.handleStartStop.bind(this)} style={stopwatchStyles.button}>
+					<Text style={[stopwatchStyles.startBtn, this.state.isRunning && stopwatchStyles.stopBtn]}>{this.state.isRunning ? 'Stop' : 'Start'}</Text>
 				</TouchableHighlight>
 
 			</View>
@@ -205,11 +211,11 @@ class Stopwatch extends Component {
 
 	render() {
 		return (
-			<View style={styles.container}>
-				<View style={styles.top}>
+			<View style={stopwatchStyles.container}>
+				<View style={stopwatchStyles.top}>
 					{this._renderTimers()}
 				</View>
-				<View style={styles.bottom}>
+				<View style={stopwatchStyles.bottom}>
 					{this._renderButtons()}
 					{this._renderLaps()}
 				</View>
@@ -246,11 +252,13 @@ class Stopwatch extends Component {
 	}
 
 	handleLapReset() {
-		let {isRunning, mainTimerStart} = this.state;
+		let {isRunning, mainTimerStart, laps} = this.state;
 
+		// console.log("In handleLapReset");
+		var list = [];
 		// Case 1: reset button clicked
 		if(mainTimerStart && !isRunning) {
-			laps: [],
+			// console.log("Resetting!");
 			this.setState({
 				mainTimerStart: null,
 				lapTimerStart: null,
@@ -259,16 +267,26 @@ class Stopwatch extends Component {
 			});
 		}
 
+		var lapTime = this.state.lapTimer;
 		// Case 2: lap button clicked
-		// if(mainTimerStart && isRunning) {
-		// 	laps: [],
-		// 	this.setState({
-		// 		mainTimerStart: null,
-		// 		lapTimerStart: null,
-		// 		mainTimer: 0,
-		// 		lapTimer: 0,
-		// 	});
-		// }
+		if(mainTimerStart && isRunning) {
+			// console.log("Lapping!");
+			list = [{ name: 'Lap ' + (this.state.lapList.length + 1), value: TimeFormatter(lapTime) }];
+			list = this.state.lapList.concat(list);
+
+			this.setState({
+				lapTimerStart: new Date(),
+				lapTimer: 0
+			});
+		}
+
+		this.setState({
+			lapList: list,
+			dataSource: this.state.dataSource.cloneWithRows(list)
+		});
+		// console.log(this.state.lapList);
+		// console.log(list);
+		// console.log("Set the state\n");
 
 	}
 
