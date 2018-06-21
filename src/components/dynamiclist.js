@@ -147,7 +147,7 @@ export default class DynamicList extends Component {
 
                     <View style={styles.contact}>
                         <Text style={[styles.name]}>{rowData.name}</Text>
-                        <Text style={styles.phone}>{rowData.phone}</Text>
+                        {/*<Text style={styles.phone}>{rowData.phone}</Text>*/}
                     </View>
                     <TouchableOpacity style={styles.deleteWrapper} onPress={() => this._deleteItem(rowData.id)}>
                         <Icon name='md-remove-circle' style={styles.deleteIcon}/>

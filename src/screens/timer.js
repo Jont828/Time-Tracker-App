@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, View, Left, Body, Right, Title } from 'native-base';
 
-import { FooterTabNav, HeaderTitle, Stopwatch } from '../components/index.js';
+import { FooterTabNav, HeaderTitle, Stopwatch } from './../components/index.js';
 
 export default class Timer extends Component {
 

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, View, Left, Body, Right, Title } from 'native-base';
 
-import { FooterTabNav, HeaderTitle } from '../components/index.js';
-import SettingsList from 'react-native-settings-list';
+import { FooterTabNav, HeaderTitle, AppSettings } from '../components/index.js';
 
 export default class More extends Component {
 
@@ -15,6 +14,7 @@ export default class More extends Component {
 			<Container>
 				<HeaderTitle text="More" />
 				<Content>
+					<AppSettings />
 				</Content>
 				<Footer>
 					<FooterTabNav active="More" navigation={this.props.navigation}/>
