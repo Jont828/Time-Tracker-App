@@ -33,7 +33,7 @@ export default class AppSettings extends Component {
 	render() {
 		var bgColor = '#DCE3F4';
 		return (
-		<View style={{backgroundColor:'#EFEFF4',flex:1}}>
+		<View style={{backgroundColor:'#EFEFF4',flex:1, flexDirection: 'column', height: '100%'}}>
 			<View style={{backgroundColor:'#EFEFF4',flex:1}}>
 					<SettingsList borderColor='#c8c7cc' defaultItemSize={50}>
 						<SettingsList.Header headerStyle={{marginTop:15}}/>
@@ -97,7 +97,8 @@ export default class AppSettings extends Component {
 							title='License'
 							onPress={() => Alert.alert('Route to license screen')}
 						/>
-					</SettingsList>
+
+				</SettingsList>
 			</View>
 		</View>
 		);

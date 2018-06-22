@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, View, Left, Body, Right, Title, List, ListItem } from 'native-base';
 
-import { FooterTabNav, HeaderTitle, DynamicList } from '../components/index.js';
+import { FooterTabNav, HeaderTitle, DynamicList, NativeBaseSwipeableList } from '../components/index.js';
 
 
 export default class Labels extends Component {
@@ -14,9 +14,9 @@ export default class Labels extends Component {
         return (
             <Container>
                 <HeaderTitle text="Labels" />
-                <Content>
-                    <DynamicList />
-                </Content>
+
+                <NativeBaseSwipeableList />
+
                 <Footer>
                     <FooterTabNav active="Labels" navigation={this.props.navigation}/>
                 </Footer>

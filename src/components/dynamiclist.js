@@ -14,7 +14,7 @@ import data from './data.json';
 import { Header, Left, Body, Right, Title, Button, Icon } from 'native-base';
 
 
-import Swipeable from 'react-native-swipeable';
+import Swipeable from 'react-native-swipeable-row';
 
 const leftContent = <Text>Pull to activate</Text>;
 
@@ -138,6 +138,11 @@ export default class DynamicList extends Component {
                     enableEmptySections={true}
                     dataSource={this.state.dataSource}
                     renderRow={this._renderRow.bind(this)}
+
+                    renderRightHiddenRow={() =>
+                        <Button full danger onPress={_ => this._deleteItem(rowData.id)}>
+                            <Icon active name="trash" />
+                        </Button>}
                 />
 
                 <View style={styles.addButtonWrapper}>
@@ -152,6 +157,11 @@ export default class DynamicList extends Component {
         );
     }
 
+    swipeable = null;
+
+    handleUserBeganScrollingParentView() {
+      this.swipeable.recenter();
+    }
 
 
     _renderRow(rowData, sectionID, rowID) {
@@ -160,27 +170,19 @@ export default class DynamicList extends Component {
                 remove={rowData.id === this.state.rowToDelete}
                 onRemoving={this._onAfterRemovingElement.bind(this)}
             >
-                {/*<View style={styles.rowStyle}>
-
-                    <View style={styles.contact}>
-                        <Text style={[styles.name]}>{rowData.name}</Text>
-                    </View>
-                    <TouchableOpacity style={styles.deleteWrapper} onPress={() => this._deleteItem(rowData.id)}>
-                        <Icon name='md-remove-circle' style={styles.deleteIcon}/>
-                    </TouchableOpacity>
-                </View>*/}
                 <View style={styles.rowStyle}>
-                    <Swipeable rightButtons={
+                    {/*<Swipeable rightButtons={
                         [
                         <Button full danger style={styles.deleteWrapper} onPress={_ => this._deleteItem(rowData.id)}>
                             <Icon active name="trash" style={styles.deleteIcon} />
                         </Button>
-                        ]
-                    }>
+                        ] }
+                        onRef={ref => this.swipeable = ref}
+                    >*/}
                         <View style={styles.contact}>
                             <Text style={[styles.name]}>{rowData.name}</Text>
                         </View>
-                    </Swipeable>
+                    {/*</Swipeable>*/}
                 </View>
             </DynamicListRow>
         );
