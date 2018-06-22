@@ -2,18 +2,33 @@
 import React, {Component} from 'react';
 import {
     View, Text, Alert, AlertIOS, ListView, ListViewDataSource, StyleSheet,
-    TouchableOpacity, InteractionManager, RefreshControl, Animated, Platform, Dimensions
+    TouchableOpacity, InteractionManager, RefreshControl, Animated, Platform, Dimensions,
+    TouchableHighlight,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+
+{/*import Icon from 'react-native-vector-icons/Ionicons';*/}
 import md5 from 'md5';
 
 import data from './data.json';
+
+import { Header, Left, Body, Right, Title, Button, Icon } from 'native-base';
+
+
+import Swipeable from 'react-native-swipeable';
+
+const leftContent = <Text>Pull to activate</Text>;
+
+const rightButtons = [
+	<TouchableHighlight><Text>Button 1</Text></TouchableHighlight>,
+
+];
+
 const window = Dimensions.get('window');
 
 class DynamicListRow extends Component {
 
     // these values will need to be fixed either within the component or sent through props
-    _defaultHeightValue = 60;
+    _defaultHeightValue = 50;
     _defaultTransition  = 500;
 
     state = {
@@ -106,14 +121,7 @@ export default class DynamicList extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.addPanel}>
-                    <TouchableOpacity
-                        style={styles.addButton}
-                        onPress={()=> this._addItemPressed()}
-                    >
-                        <Text style={styles.addButtonText}>+ NEW</Text>
-                    </TouchableOpacity>
-                </View>
+
                 <ListView
                     refreshControl={
                       <RefreshControl
@@ -131,6 +139,15 @@ export default class DynamicList extends Component {
                     dataSource={this.state.dataSource}
                     renderRow={this._renderRow.bind(this)}
                 />
+
+                <View style={styles.addButtonWrapper}>
+                    <TouchableOpacity
+                        style={styles.addButton}
+                        onPress={()=> this._addItemPressed()}
+                    >
+                        <Icon name="add" style={styles.addButtonText}/>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     }
@@ -143,15 +160,27 @@ export default class DynamicList extends Component {
                 remove={rowData.id === this.state.rowToDelete}
                 onRemoving={this._onAfterRemovingElement.bind(this)}
             >
-                <View style={styles.rowStyle}>
+                {/*<View style={styles.rowStyle}>
 
                     <View style={styles.contact}>
                         <Text style={[styles.name]}>{rowData.name}</Text>
-                        {/*<Text style={styles.phone}>{rowData.phone}</Text>*/}
                     </View>
                     <TouchableOpacity style={styles.deleteWrapper} onPress={() => this._deleteItem(rowData.id)}>
                         <Icon name='md-remove-circle' style={styles.deleteIcon}/>
                     </TouchableOpacity>
+                </View>*/}
+                <View style={styles.rowStyle}>
+                    <Swipeable rightButtons={
+                        [
+                        <Button full danger style={styles.deleteWrapper} onPress={_ => this._deleteItem(rowData.id)}>
+                            <Icon active name="trash" style={styles.deleteIcon} />
+                        </Button>
+                        ]
+                    }>
+                        <View style={styles.contact}>
+                            <Text style={[styles.name]}>{rowData.name}</Text>
+                        </View>
+                    </Swipeable>
                 </View>
             </DynamicListRow>
         );
@@ -224,31 +253,30 @@ const styles = StyleSheet.create({
         top       : 200
     },
 
-    addPanel      : {
-        paddingTop      : 40,
-        paddingBottom   : 20,
-        backgroundColor : '#F9F9F9'
+    addButtonWrapper: {
+        borderBottomColor : '#ccc',
+        borderBottomWidth : 1,
     },
     addButton     : {
-        backgroundColor : '#0A5498',
-        width           : 120,
-        alignSelf       : 'flex-end',
-        marginRight     : 10,
-        padding         : 5,
-        borderRadius    : 5
+        backgroundColor : '#fff',
+        width           : '100%',
+        alignSelf       : 'center',
+        height          : 50,
     },
     addButtonText : {
-        color     : '#fff',
-        alignSelf : 'center'
+        flex: 1,
+        color     : '#007aff',
+        alignSelf : 'center',
+        justifyContent: 'center',
+        lineHeight: 50,
+        fontSize: 40,
     },
 
     rowStyle : {
         backgroundColor   : '#FFF',
-        paddingVertical   : 5,
-        paddingHorizontal : 10,
         borderBottomColor : '#ccc',
         borderBottomWidth : 1,
-        flexDirection     : 'row'
+        height: 50,
     },
 
     rowIcon : {
@@ -260,30 +288,24 @@ const styles = StyleSheet.create({
 
     name    : {
         color    : '#212121',
-        fontSize : 14
-    },
-    phone   : {
-        color    : '#212121',
-        fontSize : 10
+        fontSize : 18,
+        lineHeight: 50,
     },
     contact : {
-        width     : window.width - 100,
-        alignSelf : 'flex-start'
+        // width     : window.width - 100,
+        // alignSelf : 'center',
+        marginLeft: 10,
     },
 
-    dateText      : {
-        fontSize         : 10,
-        color            : '#ccc',
-        marginHorizontal : 10
-    },
     deleteWrapper : {
-        paddingVertical : 10,
-        width           : 80,
-        alignSelf       : 'flex-end'
+        width: 1000,
+        alignSelf       : 'flex-start',
+        height: 50,
     },
     deleteIcon    : {
-        fontSize  : 24,
-        color     : '#DA281C',
-        alignSelf : 'center'
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        paddingLeft: 15,
     }
 });

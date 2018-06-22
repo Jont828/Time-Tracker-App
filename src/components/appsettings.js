@@ -81,17 +81,6 @@ export default class AppSettings extends Component {
 							title='Send Feedback'
 							onPress={() => Alert.alert('Route to email')}
 						/>
-						<SettingsList.Header headerStyle={{marginTop:15}}/>
-						<SettingsList.Item
-							icon={<Image style={styles.imageStyle} source={require('./images/general.png')}/>}
-							title='General'
-							onPress={() => Alert.alert('Route To General Page')}
-						/>
-						<SettingsList.Item
-							icon={<Image style={styles.imageStyle} source={require('./images/display.png')}/>}
-							title='Display & Brightness'
-							onPress={() => Alert.alert('Route To Display Page')}
-						/>
 
 						<SettingsList.Header headerStyle={{marginTop:15}}/>
 
