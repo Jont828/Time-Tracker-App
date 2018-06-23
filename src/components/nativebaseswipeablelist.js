@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ListView, StyleSheet, View, Alert, AlertIOS, } from 'react-native';
 import { Container, Header, Content, Button, Icon, List, ListItem, Text } from 'native-base';
 
-const datas = [
+export var labelList = [
 	'Lecture',
 	'Homework',
 	'Commuting',
@@ -22,7 +22,7 @@ export default class NativeBaseSwipeableList extends Component {
 		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 		this.state = {
 			basic: true,
-			listViewData: datas,
+			listViewData: labelList,
 		};
 	}
 	deleteRow(secId, rowId, rowMap) {
@@ -30,6 +30,7 @@ export default class NativeBaseSwipeableList extends Component {
 		const newData = [...this.state.listViewData];
 		newData.splice(rowId, 1);
 		this.setState({ listViewData: newData });
+		labelList = newData;
 	}
 
 	createPrompt(title, onPressFunction, secId, rowId, rowMap) {
@@ -58,6 +59,7 @@ export default class NativeBaseSwipeableList extends Component {
 				const newData = [...this.state.listViewData];
 				newData.splice(newData.length, 0, name);
 				this.setState({ listViewData: newData });
+				labelList = newData;
 			},
 			{/* Omitting secId, rowId, rowMap */}
 		);
