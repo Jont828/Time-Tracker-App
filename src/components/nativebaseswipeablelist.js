@@ -12,31 +12,23 @@ export var labelList = [
 	'Office hours',
 	'Club meetings',
 	'Gym',
-	'Misc',
 ];
 
 
 export default class NativeBaseSwipeableList extends Component {
 	constructor(props) {
 		super(props);
+
+		console.log('In list:', this.props.labels);
+
 		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-		this.state = {
-			basic: true,
-			listViewData: labelList,
-		};
-	}
-	deleteRow(secId, rowId, rowMap) {
-		rowMap[`${secId}${rowId}`].props.closeRow();
-		const newData = [...this.state.listViewData];
-		newData.splice(rowId, 1);
-		this.setState({ listViewData: newData });
-		labelList = newData;
 	}
 
-	createPrompt(title, onPressFunction, secId, rowId, rowMap) {
-
+	createPrompt(promptTitle, onPressOkayFunction, rowId) {
+		// console.log("Props are", this.props);
+		// console.log("Going to add to list", this.props.labels);
 		AlertIOS.prompt(
-			title,
+			promptTitle,
 			'Name here:',
 			[
 				{
@@ -45,44 +37,39 @@ export default class NativeBaseSwipeableList extends Component {
 				},
 				{
 					text    : 'OK',
-					onPress : (name) => onPressFunction(name, secId, rowId, rowMap)
+					onPress : (name) =>	{ onPressOkayFunction(name, rowId) }
 				}
 			],
 			'plain-text',
 			''
 		);
+		// console.log("Added to list:", this.props.labels);
 	}
 
 	addRow() {
-		this.createPrompt("Add Item",
-		 	(name) => {
-				const newData = [...this.state.listViewData];
-				newData.splice(newData.length, 0, name);
-				this.setState({ listViewData: newData });
-				labelList = newData;
-			},
-			{/* Omitting secId, rowId, rowMap */}
-		);
+		this.createPrompt("Add Item", this.props.handleAddLabel, {/* Omitting rowId because we don't need it to append */} );
 	}
 
 	renameRow(secId, rowId, rowMap) {
-		this.createPrompt("Rename Item",
-			(name, secId, rowId, rowMap) => {
-				const newData = [...this.state.listViewData];
-				newData.splice(rowId, 1, name);
-				this.setState({ listViewData: newData });
-			},
-		secId, rowId, rowMap);
+		console.log(secId, rowId, this.props.labels[rowId]);
+
+		this.createPrompt("Rename Item", this.props.handleRenameLabel, rowId);
+		rowMap[`${secId}${rowId}`].props.closeRow(); // Closes/unswipes row on the list
+	}
+
+	deleteRow(secId, rowId, rowMap) {
+		// Closes/unswipes row on the list. Must close before deleting
+    	rowMap[`${secId}${rowId}`].props.closeRow();
+		this.props.handleDeleteLabel(rowId);
 	}
 
 	render() {
-		const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 		return (
 			<Container style={styles.container}>
 				<Content style={styles.content}>
 					<View style={styles.list}>
 						<List
-							dataSource={this.ds.cloneWithRows(this.state.listViewData)}
+							dataSource={this.ds.cloneWithRows(this.props.labels)}
 							renderRow={data =>
 								<ListItem style={styles.listItem}>
 									<View style={styles.listDataWrapper}>

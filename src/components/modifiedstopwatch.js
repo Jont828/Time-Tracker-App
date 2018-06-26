@@ -4,23 +4,18 @@ import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, View
 import TimeFormatter from 'minutes-seconds-milliseconds';
 
 import { labelList, PickerWithIcon } from './index.js';
-
-let ds = new ListView.DataSource({
-	rowHasChanged: (row1, row2) => row1 !== row2,
-});
-
-
+import IOSPicker from 'react-native-ios-picker';
 
 export default class ModifiedStopwatch extends Component {
 
 	constructor(props) {
 		super(props);
 
-		// laps = [];
+		// var ds = new ListView.DataSource({
+		// 	rowHasChanged: (row1, row2) => row1 !== row2,
+		// });
+
 		this.state = {
-			label: null,
-			lapList: [],
-			dataSource: ds.cloneWithRows([]),
 			isRunning: false,
 			mainTimer: null,
 			lapTimer: null,
@@ -29,12 +24,9 @@ export default class ModifiedStopwatch extends Component {
 		}
 	}
 
-	handlePickerSelect = (listLabel) => {
-		this.setState({ label: listLabel });
-		console.log("Got", listLabel);
-	}
 
 	render() {
+		// console.log("In stopwatch!", this.props.myText);
 		return (
 			<View style={styles.container}>
 				<View style={styles.top}>
@@ -42,35 +34,39 @@ export default class ModifiedStopwatch extends Component {
 				</View>
 				<View style={styles.bottom}>
 					{this._renderButtons()}
-					<PickerWithIcon handlePickerSelect={this.handlePickerSelect} />
-					{this._renderLaps()}
+					<PickerWithIcon {...this.props} />
+					{/* <IOSPicker
+					  data={internalList}
+					  onValueChange={(d, i)=> { this.change(d, i);  }}/> */}
+
+					{/* {this._renderLaps()} */}
 				</View>
 			</View>
 		);
 	}
 
-	_renderLaps() {
-		return (
-			<View style={styles.lapsWrapper}>
-				<ListView
-					enableEmptySections={true}
-					dataSource={this.state.dataSource}
-					renderRow={ (rowData) => (
-						<View style={styles.lapRow}>
-							<Text style={styles.lapNumber}>{rowData.name}</Text>
-							<Text style={styles.lapNumber}>{rowData.value}</Text>
-						</View>
-					)}
-				/>
-			</View>
-		);
-	}
+	// _renderLaps() {
+	// 	return (
+	// 		<View style={styles.lapsWrapper}>
+	// 			<ListView
+	// 				enableEmptySections={true}
+	// 				dataSource={this.state.dataSource}
+	// 				renderRow={ (rowData) => (
+	// 					<View style={styles.lapRow}>
+	// 						<Text style={styles.lapNumber}>{rowData.name}</Text>
+	// 						<Text style={styles.lapNumber}>{rowData.value}</Text>
+	// 					</View>
+	// 				)}
+	// 			/>
+	// 		</View>
+	// 	);
+	// }
 
 	_renderTimers() {
 		return (
 			<View style={styles.timerWrapper}>
 				<View style={styles.timerWrapperInner}>
-					<Text style={styles.lapTimer}>{ TimeFormatter(this.state.lapTimer) }</Text>
+					{/* <Text style={styles.lapTimer}>{ TimeFormatter(this.state.lapTimer) }</Text> */}
 					<Text style={styles.mainTimer}>{ TimeFormatter(this.state.mainTimer) }</Text>
 				</View>
 			</View>
@@ -80,9 +76,9 @@ export default class ModifiedStopwatch extends Component {
 	_renderButtons() {
 		return(
 			<View style={styles.buttonWrapper}>
-				<TouchableHighlight underlayColor='#777' onPress={this.handleLapReset.bind(this)} style={styles.button}>
+				{/* <TouchableHighlight underlayColor='#777' onPress={this.handleLapReset.bind(this)} style={styles.button}>
 					<Text>{ (this.state.mainTimerStart && !this.state.isRunning) ? 'Reset' : 'Lap'}</Text>
-				</TouchableHighlight>
+				</TouchableHighlight> */}
 				<TouchableHighlight underlayColor='#ddd' onPress={this.handleStartStop.bind(this)} style={styles.button}>
 					<Text style={[styles.startBtn, this.state.isRunning && styles.stopBtn]}>{this.state.isRunning ? 'Stop' : 'Start'}</Text>
 				</TouchableHighlight>
@@ -99,8 +95,16 @@ export default class ModifiedStopwatch extends Component {
 		if(isRunning) {
 			clearInterval(this.interval);
 			this.setState({
-				isRunning: false
+				isRunning: false,
+				mainTimerStart: null,
+				mainTimer: 0
 			});
+
+			let label = this.props.labels[this.props.selectedLabelIndex];
+			let mainTimer = this.state.mainTimer;
+			this.props.recordTimesWithLabels(label, TimeFormatter(mainTimer));
+
+			console.log(label, TimeFormatter(mainTimer));
 
 			return;
 		}
@@ -124,33 +128,35 @@ export default class ModifiedStopwatch extends Component {
 	handleLapReset() {
 		let {isRunning, mainTimerStart, laps} = this.state;
 
-		var list = [];
+		// var list = [];
 		// Case 1: reset button clicked
 		if(mainTimerStart && !isRunning) {
+
 			this.setState({
 				mainTimerStart: null,
-				lapTimerStart: null,
+				// lapTimerStart: null,
 				mainTimer: 0,
-				lapTimer: 0,
+				// lapTimer: 0,
 			});
+
 		}
 
-		var lapTime = this.state.lapTimer;
-		// Case 2: lap button clicked
-		if(mainTimerStart && isRunning) {
-			list = [{ name: 'Lap ' + (this.state.lapList.length + 1), value: TimeFormatter(lapTime) }];
-			list = list.concat(this.state.lapList);
-
-			this.setState({
-				lapTimerStart: new Date(),
-				lapTimer: 0
-			});
-		}
-
-		this.setState({
-			lapList: list,
-			dataSource: this.state.dataSource.cloneWithRows(list)
-		});
+		// var lapTime = this.state.lapTimer;
+		// // Case 2: lap button clicked
+		// if(mainTimerStart && isRunning) {
+		// 	list = [{ name: (this.state.label) , value: TimeFormatter(lapTime) }];
+		// 	list = list.concat(this.state.lapList);
+		//
+		// 	this.setState({
+		// 		lapTimerStart: new Date(),
+		// 		lapTimer: 0
+		// 	});
+		// }
+		//
+		// this.setState({
+		// 	lapList: list,
+		// 	dataSource: this.state.dataSource.cloneWithRows(list)
+		// });
 
 	}
 
@@ -229,12 +235,12 @@ const styles = StyleSheet.create({
 	},
 	lapNumber: {
 		fontSize: 16,
-		color: '#777'
+		color: '#777',
 	},
 	lapTime: {
 		color: '#000',
 		fontSize: 20,
-		fontWeight: '300'
+		fontWeight: '300',
 	},
 
 	startBtn: {

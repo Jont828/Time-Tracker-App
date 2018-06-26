@@ -15,7 +15,7 @@ export default class Labels extends Component {
             <Container>
                 <HeaderTitle text="Labels" />
 
-                <NativeBaseSwipeableList />
+                <NativeBaseSwipeableList {...this.props.screenProps} />
 
                 <Footer>
                     <FooterTabNav active="Labels" navigation={this.props.navigation}/>

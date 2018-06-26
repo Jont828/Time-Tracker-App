@@ -3,6 +3,8 @@ import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, View
 
 import { FooterTabNav, HeaderTitle } from '../components/index.js';
 
+import TimeLog from '../components/timelog.js';
+
 export default class Stats extends Component {
 
 	static navigationOptions = {
@@ -14,7 +16,7 @@ export default class Stats extends Component {
 			<Container>
 				<HeaderTitle text="Statistics" />
 				<Content>
-					
+					<TimeLog {...this.props.screenProps} />
 				</Content>
 				<Footer>
 					<FooterTabNav active="Stats" navigation={this.props.navigation}/>
