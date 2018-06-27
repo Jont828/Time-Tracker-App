@@ -5,9 +5,6 @@ import { Timer, Stats, Labels, More } from './screens/index.js';
 
 const TabNavFooter = createSwitchNavigator(
 	{
-		// TimerScreen: { screen: props => <Timer {...props} {...myProps} /> },
-		// TimerScreen: { screen: createComponent(Timer, props.myText) },
-		// TimerScreen: { screen: createComponent(Timer, "Testing testing") },
 		TimerScreen: { screen: Timer },
 		StatsScreen: { screen: Stats },
 		LabelsScreen: { screen: Labels },
@@ -33,16 +30,21 @@ export default class App extends React.Component {
 			'Commuting',
 			'Eating',
 			'Internet',
-			'Coding projects',
-			'Office hours',
-			'Club meetings',
 			'Gym',
+		];
+
+		let initialTimes = [
+			{label: initialLabels[0], time: 3599000},
+			{label: initialLabels[1], time: 59000},
+			{label: initialLabels[2], time: 1000000},
+			{label: initialLabels[3], time: 860000},
+			{label: initialLabels[4], time: 10000000},
 		];
 
 		this.state = {
 			labels: initialLabels,
-			selectedLabelIndex: 0,
-			listOfTimesWithLabels: [],
+			selectedLabelIndex: (initialLabels.length / 2),
+			listOfTimesWithLabels: initialTimes,
 		}
 
 		this.handleAddLabel = this.handleAddLabel.bind(this);
@@ -116,7 +118,7 @@ export default class App extends React.Component {
 			listOfTimesWithLabels: list
 		})
 		console.log(label, time);
-		console.log(list);
+		// console.log(list);
 	}
 
 	///////////////////////////////////////
@@ -133,8 +135,8 @@ export default class App extends React.Component {
 			handleDeleteLabel: this.handleDeleteLabel,
 			handlePickerSelect: this.handlePickerSelect,
 			recordTimesWithLabels: this.recordTimesWithLabels,
-		}
-		console.log(newProps);
+		};
+		// console.log(newProps);
 		return <TabNavFooter
 			screenProps={newProps}
 		/>;

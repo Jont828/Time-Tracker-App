@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, TouchableHighlight, ListView } from 'react-native';
 import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, View, Left, Body, Right, Title } from 'native-base';
-import TimeFormatter from 'minutes-seconds-milliseconds';
 
-import { labelList, PickerWithIcon } from './index.js';
+import { labelList, LabelPicker, TimeFormatter } from './index.js';
 import IOSPicker from 'react-native-ios-picker';
 
 export default class ModifiedStopwatch extends Component {
@@ -34,7 +33,7 @@ export default class ModifiedStopwatch extends Component {
 				</View>
 				<View style={styles.bottom}>
 					{this._renderButtons()}
-					<PickerWithIcon {...this.props} />
+					<LabelPicker {...this.props} title='Select a label:' style={styles.picker}/>
 					{/* <IOSPicker
 					  data={internalList}
 					  onValueChange={(d, i)=> { this.change(d, i);  }}/> */}
@@ -63,11 +62,13 @@ export default class ModifiedStopwatch extends Component {
 	// }
 
 	_renderTimers() {
+		// console.log(typeof(TimeFormatter));
+		// console.log(typeof(TimeFormatter(this.state.mainTimer)));
 		return (
 			<View style={styles.timerWrapper}>
 				<View style={styles.timerWrapperInner}>
-					{/* <Text style={styles.lapTimer}>{ TimeFormatter(this.state.lapTimer) }</Text> */}
-					<Text style={styles.mainTimer}>{ TimeFormatter(this.state.mainTimer) }</Text>
+					<Text style={styles.mainTimer}>{TimeFormatter(this.state.mainTimer)}</Text>
+					{/* <TimeFormatter milliseconds={this.state.mainTimer + 3599000} style={styles.mainTimer} /> */}
 				</View>
 			</View>
 		);
@@ -102,9 +103,8 @@ export default class ModifiedStopwatch extends Component {
 
 			let label = this.props.labels[this.props.selectedLabelIndex];
 			let mainTimer = this.state.mainTimer;
-			this.props.recordTimesWithLabels(label, TimeFormatter(mainTimer));
+			this.props.recordTimesWithLabels(label, mainTimer);
 
-			console.log(label, TimeFormatter(mainTimer));
 
 			return;
 		}
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	bottom: {
-		flex: 2,
+		flex: 3,
 		backgroundColor: '#F0EFF5'
 	},
 
@@ -209,6 +209,9 @@ const styles = StyleSheet.create({
 	timerWrapperInner: {
 		// borderWidth: 0.5,
 		alignSelf: 'center',
+	},
+	picker: {
+		// flex: 2
 	},
 	buttonWrapper: {
 		flexDirection: 'row',

@@ -5,7 +5,11 @@ import ModifiedStopwatch from './modifiedstopwatch.js';
 import DynamicList from './dynamiclist.js';
 import AppSettings from './appsettings.js'
 import NativeBaseSwipeableList, { labelList } from './nativebaseswipeablelist.js';
-import PickerWithIcon from './picker.js';
+import LabelPicker from './picker.js';
+import TimeLog from './timelog.js';
+import TimeChart from './timechart.js';
+import Pie from './Pie.js';
+import TimeFormatter from './timeformatter.js';
 
 export {
 	FooterTabNav,
@@ -16,5 +20,9 @@ export {
 	NativeBaseSwipeableList,
 	labelList,
 	ModifiedStopwatch,
-	PickerWithIcon,
+	LabelPicker,
+	TimeLog,
+	TimeChart,
+	Pie,
+	TimeFormatter,
 };
