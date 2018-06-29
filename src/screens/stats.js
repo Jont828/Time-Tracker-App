@@ -14,7 +14,10 @@ export default class Stats extends Component {
 		let pieProps = {
 			...this.state,
 			data: this.props.screenProps.listOfTimesWithLabels,
-			pieWidth: 500,
+			pieWidth: 200,
+			pieHeight: 200,
+			width: 300,
+			height: 500,
 		};
 
 		return (
@@ -31,9 +34,10 @@ export default class Stats extends Component {
 							<Pie {...pieProps} />
 						</Content>
 					</Tab>
-					<Tab heading="Who knows?">
+					<Tab heading="Pie">
 						<Content>
 							<TimeChart {...pieProps} />
+							<Text>Hello</Text>
 						</Content>
 					</Tab>
 				</Tabs>

@@ -12,7 +12,7 @@ export default class TimeLog extends Component {
 			        return (
 						<View style={styles.row} key={index}>
 							<Text style={styles.label}>{item.label}</Text>
-						 	<Text style={styles.time}>{TimeFormatter(item.time)}</Text>
+						 	<Text style={styles.time}>{TimeFormatter(item.time, true)}</Text>
 						</View>
 					) //if you have a bunch of keys value pair
 			    })}

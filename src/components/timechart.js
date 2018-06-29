@@ -30,18 +30,32 @@ import {
 	scaleLinear
 } from 'd3-scale';
 
+import AnimShape from './AnimShape.js';
+
 export default class TimeChart extends Component {
 
 	constructor(props) {
 		super(props);
 
+		this.state = { highlightedIndex: 0 };
+
+		this._createPieChart = this._createPieChart.bind(this);
 		this._value = this._value.bind(this);
 		this._label = this._label.bind(this);
+		this._getcolor = this._getcolor.bind(this);
+		this._onPieItemSelected = this._onPieItemSelected.bind(this);
+
+		this.colors = [
+			"#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+			"#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"
+		];
 	}
 
 	_value(item) { return item.time; }
 
 	_label(item) { return item.label; }
+
+	_getcolor(index) { return this.colors[index % this.colors.length]; }
 
 	_createPieChart(index) {
 
@@ -49,10 +63,10 @@ export default class TimeChart extends Component {
 				.value(this._value)
 				(this.props.data);
 
-		// var hightlightedArc = d3.shape.arc()
-		// 	.outerRadius(this.props.pieWidth/2 + 10)
-		// 	.padAngle(.05)
-		// 	.innerRadius(30);
+		var hightlightedArc = d3.shape.arc()
+			.outerRadius(this.props.pieWidth/2 + 10)
+			.padAngle(.05)
+			.innerRadius(30);
 
 		var arc = d3.shape.arc()
 			.outerRadius(this.props.pieWidth/2)
@@ -60,13 +74,18 @@ export default class TimeChart extends Component {
 			.innerRadius(30);
 
 		var arcData = arcs[index];
-		var path = arc(arcData);
-		// var path = (this.state.highlightedIndex == index) ? hightlightedArc(arcData) : arc(arcData);
+		var path = (this.state.highlightedIndex == index) ? hightlightedArc(arcData) : arc(arcData);
+
 
 		 return {
 			 path,
-			 color: "#2ca02c",
+			 color: this._getcolor(index),
 		 };
+	}
+
+	_onPieItemSelected(index) {
+		this.setState({...this.state, highlightedIndex: index});
+		// this.props.onItemSelected(index);
 	}
 
 	render() {
@@ -80,39 +99,56 @@ export default class TimeChart extends Component {
 	    //   .innerRadius(30)  // Inner radius: to create a donut or pie
 	    //   (arcs[i]);
 
+		const margin = styles.container.margin;
+		// const x = this.props.pieWidth / 2 + margin;
+		// const y = this.props.pieHeight / 2 + margin;
 
+		const x = 250;
+		const y = 250;
 
 		return (
-			// <Surface width={1000} height={1000}>
-			// 	<Group x={250} y={250}>
-			// 		 <Shape
-			// 				d={"M-68.9646319937036,-29.476762610114324A75,75,0,0,1,-49.345310456503256,-56.48044206582762L-20.635195356782273,-21.775874553905552A30,30,0,0,0,-27.086713440010442,-12.896121704557451Z"}
-			// 				stroke={"#2ca02c"}	// green line
-			// 				strokeWidth={3}
-			// 				/>
-			// 	</Group>
-			// </Surface>
-			<Surface width={1000} height={1000}>
-				<Group x={250} y={250}>
+			<View width={this.props.width} height={this.props.height}>
+				<Surface width={500} height={500}>
+					<Group x={x} y={y}>
+						{
+							this.props.data.map( (item, index) =>
+								(<AnimShape
+									key={'pie_shape_' + index}
+									color={this._getcolor(index)}
+									d={ () => this._createPieChart(index)}
+								/>)
+							)
+						}
+					</Group>
+				</Surface>
+				<View style={{position: 'absolute', top:margin, left: 2*margin + this.props.pieWidth}}>
 					{
-						 // pieChart has all the svg paths calculated in step 2)
-						 arcs.map( (item, index) =>
-							(<Shape
-								key={'pie_shape_' + index}
-								fill={"#2ca02c"}
-								stroke={"#2ca02c"}
-								d={
-									d3.shape.arc()
-									.outerRadius(this.props.pieWidth/2)
-									.padAngle(.05)
-									.innerRadius(30)
-									  (item)
-								}
-								/>))
+						this.props.data.map( (item, index) =>
+						{
+							var fontWeight = this.state.highlightedIndex == index ? 'bold' : 'normal';
+							return (
+								<TouchableWithoutFeedback key={index} onPress={() => this._onPieItemSelected(index)}>
+									<View>
+									<Text style={[styles.label, {color: this._getcolor(index), fontWeight: fontWeight}]}>{this._label(item)}: {this._value(item)}%</Text>
+									</View>
+								</TouchableWithoutFeedback>
+							);
+						})
 					}
-				</Group>
-			</Surface>
+				</View>
+			</View>
 		);
 	}
 
 }
+
+const styles = StyleSheet.create({
+	container: {
+		margin: 20,
+	},
+	label: {
+		fontSize: 15,
+		marginTop: 5,
+		fontWeight: 'normal',
+	}
+});
