@@ -66,12 +66,12 @@ export default class TimeChart extends Component {
 		var hightlightedArc = d3.shape.arc()
 			.outerRadius(this.props.pieWidth/2 + 10)
 			.padAngle(.05)
-			.innerRadius(30);
+			.innerRadius(40);
 
 		var arc = d3.shape.arc()
 			.outerRadius(this.props.pieWidth/2)
 			.padAngle(.05)
-			.innerRadius(30);
+			.innerRadius(50);
 
 		var arcData = arcs[index];
 		var path = (this.state.highlightedIndex == index) ? hightlightedArc(arcData) : arc(arcData);
@@ -99,37 +99,51 @@ export default class TimeChart extends Component {
 	    //   .innerRadius(30)  // Inner radius: to create a donut or pie
 	    //   (arcs[i]);
 
-		const margin = styles.container.margin;
+		const margin = 25;
 		// const x = this.props.pieWidth / 2 + margin;
 		// const y = this.props.pieHeight / 2 + margin;
 
-		const x = 250;
-		const y = 250;
+		const x = (this.props.pieWidth + margin) / 2;
+		const y = (this.props.pieHeight + margin) / 2;
+
+		var total = 0;
+		for(let item of this.props.data) {
+			total += this._value(item);
+		}
 
 		return (
-			<View width={this.props.width} height={this.props.height}>
-				<Surface width={500} height={500}>
-					<Group x={x} y={y}>
-						{
-							this.props.data.map( (item, index) =>
-								(<AnimShape
-									key={'pie_shape_' + index}
-									color={this._getcolor(index)}
-									d={ () => this._createPieChart(index)}
-								/>)
-							)
-						}
-					</Group>
-				</Surface>
-				<View style={{position: 'absolute', top:margin, left: 2*margin + this.props.pieWidth}}>
+			<View style={styles.wrapper}>
+			{/* <View width={this.props.width} height={this.props.height}> */}
+				{/* <Surface > */}
+				<View style={styles.surfaceWrapper}>
+					<Surface width={this.props.pieWidth + margin} height={this.props.pieHeight + margin}>
+						<Group x={x} y={y}>
+						{/* <Group x={x} y={y}> */}
+							{
+								this.props.data.map( (item, index) =>
+									(<AnimShape
+										key={'pie_shape_' + index}
+										color={this._getcolor(index)}
+										d={ () => this._createPieChart(index)}
+									/>)
+								)
+							}
+						</Group>
+					</Surface>
+				</View>
+				<View style={styles.textWrapper}>
+				{/* <View style={{position: 'absolute', top:margin, left: 2*margin + this.props.pieWidth}}> */}
 					{
 						this.props.data.map( (item, index) =>
 						{
 							var fontWeight = this.state.highlightedIndex == index ? 'bold' : 'normal';
+							const percentage = this._value(item) / total * 100;
 							return (
 								<TouchableWithoutFeedback key={index} onPress={() => this._onPieItemSelected(index)}>
 									<View>
-									<Text style={[styles.label, {color: this._getcolor(index), fontWeight: fontWeight}]}>{this._label(item)}: {this._value(item)}%</Text>
+										<Text style={[styles.label, {color: this._getcolor(index), fontWeight: fontWeight}]} >
+											{this._label(item)}: {percentage.toFixed(1)}%
+										</Text>
 									</View>
 								</TouchableWithoutFeedback>
 							);
@@ -143,11 +157,39 @@ export default class TimeChart extends Component {
 }
 
 const styles = StyleSheet.create({
+	wrapper: {
+		flex: 1,
+		flexWrap: 'wrap',
+
+		flexDirection: 'row',
+		justifyContent: 'space-evenly',
+		// justifyContent: 'space-between',
+
+		marginTop: '5%',
+		// marginLeft: '7%',
+		// marginRight: '7%',
+		borderColor: '#000',
+		borderWidth: 5
+	},
+	surfaceWrapper: {
+		borderColor: 'orange',
+		borderWidth: 5,
+		alignSelf: 'center',
+		// flex: 1,
+		// flexDirection: 'row',
+	},
+	textWrapper: {
+		borderColor: 'red',
+		borderWidth: 5,
+		alignSelf: 'center',
+		// flex: 1,
+		// flexDirection: 'row',
+	},
 	container: {
 		margin: 20,
 	},
 	label: {
-		fontSize: 15,
+		fontSize: 20,
 		marginTop: 5,
 		fontWeight: 'normal',
 	}

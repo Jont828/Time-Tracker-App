@@ -15,15 +15,12 @@ export default class FooterTabNav extends Component {
 	}
 }
 
-class FooterButton extends Component {
+function FooterButton(props) {
 
-	render() {
-		return (
-			<Button vertical active={this.props.active} onPress={() => this.props.navigation.navigate(this.props.tabLink)}>
-				<Icon active={this.props.active} name={this.props.icon} />
-				<Text>{this.props.text}</Text>
-			</Button>
-		);
-
-	}
+	return (
+		<Button vertical active={props.active} onPress={() => props.navigation.navigate(props.tabLink)}>
+			<Icon active={props.active} name={props.icon} />
+			<Text>{props.text}</Text>
+		</Button>
+	);
 }

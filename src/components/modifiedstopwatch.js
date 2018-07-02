@@ -20,6 +20,7 @@ export default class ModifiedStopwatch extends Component {
 			lapTimer: null,
 			mainTimerStart: null,
 			lapTimerStart: null,
+			selectedLabel: null,
 		}
 	}
 
@@ -33,7 +34,11 @@ export default class ModifiedStopwatch extends Component {
 				</View>
 				<View style={styles.bottom}>
 					{this._renderButtons()}
-					<LabelPicker {...this.props} title='Select a label:' style={styles.picker}/>
+					<LabelPicker
+						{...this.props}
+						title={this.state.isRunning ? ('Selected: ' + this.state.selectedLabel) : 'Select a label:'}
+						style={styles.picker}
+					/>
 					{/* <IOSPicker
 					  data={internalList}
 					  onValueChange={(d, i)=> { this.change(d, i);  }}/> */}
@@ -44,26 +49,7 @@ export default class ModifiedStopwatch extends Component {
 		);
 	}
 
-	// _renderLaps() {
-	// 	return (
-	// 		<View style={styles.lapsWrapper}>
-	// 			<ListView
-	// 				enableEmptySections={true}
-	// 				dataSource={this.state.dataSource}
-	// 				renderRow={ (rowData) => (
-	// 					<View style={styles.lapRow}>
-	// 						<Text style={styles.lapNumber}>{rowData.name}</Text>
-	// 						<Text style={styles.lapNumber}>{rowData.value}</Text>
-	// 					</View>
-	// 				)}
-	// 			/>
-	// 		</View>
-	// 	);
-	// }
-
 	_renderTimers() {
-		// console.log(typeof(TimeFormatter));
-		// console.log(typeof(TimeFormatter(this.state.mainTimer)));
 		return (
 			<View style={styles.timerWrapper}>
 				<View style={styles.timerWrapperInner}>
@@ -92,8 +78,15 @@ export default class ModifiedStopwatch extends Component {
 
 		let { isRunning, firstTime, mainTimer, lapTimer } = this.state;
 
-		// Case 1: stop button clicked
-		if(isRunning) {
+		if(!isRunning) { // Start button clicked
+			this.setState({
+				mainTimerStart: new Date(),
+				lapTimerStart: new Date(),
+				isRunning: true,
+				selectedLabel: this.props.labels[this.props.selectedLabelIndex],
+			});
+			console.log(new Date());
+		} else { // Stop button clicked
 			clearInterval(this.interval);
 			this.setState({
 				isRunning: false,
@@ -101,20 +94,14 @@ export default class ModifiedStopwatch extends Component {
 				mainTimer: 0
 			});
 
-			let label = this.props.labels[this.props.selectedLabelIndex];
 			let mainTimer = this.state.mainTimer;
-			this.props.recordTimesWithLabels(label, mainTimer);
-
+			this.props.recordTimesWithLabels(this.state.selectedLabel, mainTimer);
 
 			return;
 		}
 
 		// Case 2: start button clicked
-		this.setState({
-			mainTimerStart: new Date(),
-			lapTimerStart: new Date(),
-			isRunning: true
-		});
+
 
 
 		this.interval = setInterval(() => {

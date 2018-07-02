@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, View, Left, Body, Right, Title, Tab, Tabs } from 'native-base';
 
-import { FooterTabNav, HeaderTitle, TimeLog, TimeChart, Pie } from '../components/index.js';
+import { FooterTabNav, HeaderTitle, TimeLog, TimeChart, Pie, DailyStats } from '../components/index.js';
 
 export default class Stats extends Component {
 
@@ -11,32 +11,33 @@ export default class Stats extends Component {
 
 	render() {
 
+		// let
 		let pieProps = {
 			...this.state,
 			data: this.props.screenProps.listOfTimesWithLabels,
-			pieWidth: 200,
-			pieHeight: 200,
-			width: 300,
+			pieWidth: 300,
+			pieHeight: 300,
+			width: '100%',
 			height: 500,
 		};
 
 		return (
 			<Container>
 				<HeaderTitle text="Statistics" />
-				<Tabs initialPage={0}>
-					<Tab heading="Logs">
+				<Tabs initialPage={1}>
+					<Tab heading="Daily Logs">
 					  <Content>
 							<TimeLog {...this.props.screenProps} />
 					  </Content>
 					</Tab>
-					<Tab heading="Charts">
-						<Content>
-							<Pie {...pieProps} />
-						</Content>
+					<Tab heading="Summary">
+						{/* <Content> */}
+							<DailyStats {...pieProps} />
+						{/* </Content> */}
 					</Tab>
-					<Tab heading="Pie">
-						<Content>
-							<TimeChart {...pieProps} />
+					<Tab heading="Animated Pie">
+						<Content style={{flex: 1}}>
+							{/* <TimeChart {...pieProps} /> */}
 							<Text>Hello</Text>
 						</Content>
 					</Tab>

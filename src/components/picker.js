@@ -12,13 +12,13 @@ export default class LabelPicker extends Component {
 					<View style={styles.pickerWrapper}>
 						<Picker
 							style={styles.picker}
-						    mode="dropdown"
-						    selectedValue={this.props.selectedLabelIndex}
-						    onValueChange={this.props.handlePickerSelect}>
+							mode="dropdown"
+							selectedValue={this.props.selectedLabelIndex}
+							onValueChange={this.props.handlePickerSelect}>
 
-						    {(this.props.labels).map((item, index) => {
-						        return (<Picker.Item label={item} value={index} key={index}/>)
-						    })}
+							{(this.props.labels).map((item, index) => {
+								return (<Picker.Item label={item} value={index} key={index}/>)
+							})}
 
 						</Picker>
 					</View>

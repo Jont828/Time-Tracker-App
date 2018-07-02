@@ -9,6 +9,7 @@ import LabelPicker from './picker.js';
 import TimeLog from './timelog.js';
 import TimeChart from './timechart.js';
 import Pie from './Pie.js';
+import DailyStats from './DailyStats.js';
 import TimeFormatter from './timeformatter.js';
 
 export {
@@ -24,5 +25,6 @@ export {
 	TimeLog,
 	TimeChart,
 	Pie,
+	DailyStats,
 	TimeFormatter,
 };
