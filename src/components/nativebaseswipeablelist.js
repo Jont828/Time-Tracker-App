@@ -70,11 +70,26 @@ export default class NativeBaseSwipeableList extends Component {
 					<View style={styles.list}>
 						<List
 							dataSource={this.ds.cloneWithRows(this.props.labels)}
-							renderRow={data =>
+							renderRow={(data, secId, rowId, rowMap) =>
 								<ListItem style={styles.listItem}>
 									<View style={styles.listDataWrapper}>
-										<Text style={styles.itemText}> {data} </Text>
+										<Icon
+											active
+											style={{
+												color: this.props.colors[rowId % this.props.colors.length],
+												marginRight: 10,
+												fontSize: 22,
+											}}
+											// type='Octicons'
+											// name='primitive-dot'
+											type='FontAwesome'
+											name='square'
+										>
+										</Icon>
 									</View>
+									<Text style={styles.itemText}>
+										{data}
+									</Text>
 								</ListItem>}
 							renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
 								<Button full onPress={_ => this.renameRow(secId, rowId, rowMap)}>
@@ -106,8 +121,13 @@ export default class NativeBaseSwipeableList extends Component {
 }
 
 const styles = StyleSheet.create({
+	itemText: {
+		fontSize: 18,
+		// lineHeight: 40
+	},
 	listItem : {
-		// height: 40
+		// flexDirection: 'row',
+		// justifyContent: 'flex-start'
 	},
 	listDataWrapper: {
 		marginLeft: 15

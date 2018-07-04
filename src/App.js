@@ -35,6 +35,11 @@ export default class App extends React.Component {
 			'Gym',
 		];
 
+		let colorList = [
+			"#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+			"#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"
+		];
+
 		// let initialTimes = [
 		// 	{
 		// 		date: '1999/08/28',
@@ -49,14 +54,15 @@ export default class App extends React.Component {
 		// ];
 
 		let initialTimes = {};
-		initialTimes['1999/08/28'] = [
+		initialTimes['1999-08-28'] = [
 			{label: initialLabels[0], time: 3599000},
 			{label: initialLabels[1], time: 59000},
 			{label: initialLabels[2], time: 1000000},
 			{label: initialLabels[3], time: 860000},
 			{label: initialLabels[4], time: 10000000},
 		];
-		initialTimes['2018/07/01'] = [
+		initialTimes['2018-07-01'] = [
+			{label: initialLabels[4], time: 20000000},
 			{label: initialLabels[0], time: 3599000},
 			{label: initialLabels[1], time: 59000},
 			{label: initialLabels[2], time: 1000000},
@@ -64,10 +70,22 @@ export default class App extends React.Component {
 			{label: initialLabels[4], time: 10000000},
 		];
 
+		let initialTotals = {};
+		initialTotals['2018-07-01'] = {};
+		let entry = initialTotals['2018-07-01'];
+		entry[initialLabels[0]] = 3599000;
+		entry[initialLabels[1]] = 59000;
+		entry[initialLabels[2]] = 1000000;
+		entry[initialLabels[3]] = 860000;
+		entry[initialLabels[4]] = 30000000;
+
 		this.state = {
 			labels: initialLabels,
+			colors: colorList,
 			selectedLabelIndex: (initialLabels.length / 2),
 			listOfTimesWithLabels: initialTimes,
+			totalTimesForEachLabel: initialTotals,
+			selectedDate: moment().format("YYYY-MM-DD"),
 		}
 
 		this.handleAddLabel = this.handleAddLabel.bind(this);
@@ -77,6 +95,8 @@ export default class App extends React.Component {
 		this.handlePickerSelect = this.handlePickerSelect.bind(this);
 
 		this.recordTimesWithLabels = this.recordTimesWithLabels.bind(this);
+
+		this.handleSelectDate = this.handleSelectDate.bind(this);
 	}
 
 	////////////////////////////////////////
@@ -133,13 +153,14 @@ export default class App extends React.Component {
 	// Functions to handle the stopwatch //
 	///////////////////////////////////////
 
+	// Calc totals for a given day
+
 	recordTimesWithLabels(label, time) {
 		console.log("Handling times with labels");
-		let date = moment().format('YYYY/MM/DD');
+		let date = moment().format('YYYY-MM-DD');
 		let todaysList = [ {label: label, time: time}, ];
 
 		let totalList = this.state.listOfTimesWithLabels;
-
 
 		if(date in this.state.listOfTimesWithLabels) {
 			todaysList = todaysList.concat(this.state.listOfTimesWithLabels[date]);
@@ -154,9 +175,26 @@ export default class App extends React.Component {
 		}
 		totalList[date] = todaysList;
 
+
+
+		let dailyTotalsList = this.state.totalTimesForEachLabel;
+		if(!(date in dailyTotalsList)) {
+			dailyTotalsList[date] = {};
+		}
+		let todaysTotals = dailyTotalsList[date];
+
+		if(!(label in todaysTotals)) {
+			todaysTotals[label] = 0;
+		}
+		todaysTotals[label] += time;
+		dailyTotalsList[date] = todaysTotals;
+
+
+
 		console.log(totalList);
 		this.setState({
-			listOfTimesWithLabels: totalList
+			listOfTimesWithLabels: totalList,
+			totalTimesForEachLabel: dailyTotalsList,
 		})
 		console.log(label, time);
 		// console.log(list);
@@ -166,6 +204,12 @@ export default class App extends React.Component {
 	// Functions to handle the stopwatch //
 	///////////////////////////////////////
 
+	handleSelectDate(date) {
+		console.log("Handing select date:", date);
+		this.setState({
+			selectedDate: date
+		});
+	}
 
 
 	render() {
@@ -176,6 +220,7 @@ export default class App extends React.Component {
 			handleDeleteLabel: this.handleDeleteLabel,
 			handlePickerSelect: this.handlePickerSelect,
 			recordTimesWithLabels: this.recordTimesWithLabels,
+			handleSelectDate: this.handleSelectDate,
 		};
 		// console.log(newProps);
 		return <TabNavFooter

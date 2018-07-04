@@ -14,7 +14,9 @@ export default class Stats extends Component {
 		// let
 		let pieProps = {
 			...this.state,
+			...this.props.screenProps,
 			data: this.props.screenProps.listOfTimesWithLabels,
+			dailyTotals: this.props.screenProps.totalTimesForEachLabel,
 			pieWidth: 300,
 			pieHeight: 300,
 			width: '100%',

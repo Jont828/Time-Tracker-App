@@ -1,7 +1,7 @@
 import React, { Component, } from 'react';
 import { Text, View, StyleSheet, DatePickerIOS, ScrollView, } from 'react-native';
 import DatePicker from 'react-native-datepicker';
-import { Content, Container } from 'native-base';
+import { Content, Container, Icon } from 'native-base';
 
 import { Pie, TimeFormatter } from './index.js';
 
@@ -12,44 +12,64 @@ export default class DailyStats extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			date: moment().format("YYYY-MM-DD"),
-		}
+		// this.state = {
+		// 	selectedDate: this.props.selectedDate
+		// }
+
 	}
 
 	render() {
 
-		let selectedDate = moment(this.state.date).format('YYYY/MM/DD');
+		// let this.props.selectedDate = moment(this.props.this.props.selectedDate).format('YYYY-MM-DD');
+		console.log(this.props.selectedDate);
+		console.log(this.props.handleSelectDate === undefined);
 
 		return (
 			<View style={styles.wrapper}>
 				<DatePicker
-				   style={{width: 200}}
-				   date={this.state.date}
+				   style={styles.datePicker}
+				   date={this.props.selectedDate}
 				   mode="date"
-				   placeholder="select date"
+				   placeholder="Select a date"
 				   format="YYYY-MM-DD"
+				   maxDate={moment().format("YYYY-MM-DD")}
 				   confirmBtnText="Okay"
 				   cancelBtnText="Cancel"
-				   onDateChange={(date) => {this.setState({date: date})}}
+				   onDateChange={this.props.handleSelectDate}
+				   // onDateChange={(date) => {this.setState({date: date})}}
 				 />
 
-				<Pie {...this.props} date={this.state.date} style={styles.pie}/>
+				<Pie {...this.props} date={this.props.selectedDate} style={styles.pie} />
 
 				<ScrollView style={styles.logWrapper}>
 					{
-						( selectedDate in this.props.data ) ? (
-							// <Text>Took the if</Text>
-							this.props.data[selectedDate].map( (entry, index) => {
+						( this.props.selectedDate in this.props.data ) ? (
+
+							this.props.data[this.props.selectedDate].map( (entry, index) => {
+
+								let colorIndex = this.props.labels.indexOf(entry.label);
+
 								return (
 									<View style={styles.row} key={index}>
-										<Text style={styles.label}>{entry.label}</Text>
+										<Text style={styles.label}>
+											<Icon
+												active
+												style={[
+													{ color: this.props.colors[colorIndex] },
+													styles.listIcon,
+												]}
+												// type='Octicons'
+												// name='primitive-dot'
+												type='FontAwesome'
+												name='square'
+											/>  {entry.label}
+										</Text>
 										<Text style={styles.time}>{TimeFormatter(entry.time, true)}</Text>
 									</View>
 								)
 							})
 						) : (
-							 <Text>Rip no data here</Text>
+							 <Text>Rip no data for {this.props.selectedDate}</Text>
 						)
 
 					}
@@ -63,11 +83,23 @@ export default class DailyStats extends Component {
 
 const styles = StyleSheet.create({
 	pie: {
-		marginTop: 20,
-		marginBottom: 20,
+		marginTop: 10,
+		marginBottom: 10,
+	},
+	listIcon: {
+		fontSize: 16,
+		marginRight: 20,
+	},
+	datePicker: {
+		width: 200,
+		marginTop: 10,
+		alignSelf: 'center',
+		marginBottom: 10,
 	},
 	wrapper: {
-		flex: 1
+		flex: 1,
+		// alignItems: 'center',
+		// backgroundColor: '#dddddd',
 	},
 	logWrapper: {
 		flex: 1,

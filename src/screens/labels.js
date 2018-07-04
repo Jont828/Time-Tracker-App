@@ -6,21 +6,21 @@ import { FooterTabNav, HeaderTitle, DynamicList, NativeBaseSwipeableList } from 
 
 export default class Labels extends Component {
 
-    static navigationOptions = {
-        header: null,
-    };
+	static navigationOptions = {
+		header: null,
+	};
 
-    render() {
-        return (
-            <Container>
-                <HeaderTitle text="Labels" />
+	render() {
+		return (
+			<Container>
+				<HeaderTitle text="Labels" />
 
-                <NativeBaseSwipeableList {...this.props.screenProps} />
+				<NativeBaseSwipeableList {...this.props.screenProps} />
 
-                <Footer>
-                    <FooterTabNav active="Labels" navigation={this.props.navigation}/>
-                </Footer>
-            </Container>
-        );
-    }
+				<Footer>
+					<FooterTabNav active="Labels" navigation={this.props.navigation}/>
+				</Footer>
+			</Container>
+		);
+	}
 }

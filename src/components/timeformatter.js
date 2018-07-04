@@ -3,6 +3,10 @@ import { Text, StyleSheet } from 'react-native';
 
 export default function TimeFormatter(milliseconds, verbose) {
 
+	if(verbose && milliseconds < 1000) {
+		return "< 1s";
+	}
+
 	var hours = Math.floor(milliseconds / 3600000);
 	let rem = milliseconds % 3600000;
 	hours = hours.toString();

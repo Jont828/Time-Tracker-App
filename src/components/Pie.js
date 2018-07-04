@@ -10,17 +10,15 @@ export default class Pie extends React.PureComponent {
 	constructor(props) {
 		super(props);
 
-		this.colors = [
-			"#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
-			"#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"
-		];
+
 	}
 
 
-	draw(data) {
+	draw(data, total) {
 		const Labels = ({ slices, height, width }) => {
 			return slices.map((slice, index) => {
 				const { labelCentroid, pieCentroid, data } = slice;
+				const percentage = data.amount / total * 100;
 				return (
 					<SVGText
 						key={index}
@@ -29,11 +27,11 @@ export default class Pie extends React.PureComponent {
 						fill={'white'}
 						textAnchor={'middle'}
 						alignmentBaseline={'middle'}
-						fontSize={18}
+						fontSize={12 + Math.floor(6 * data.amount / total)}
 						stroke={'black'}
 						strokeWidth={0.2}
 					>
-						{data.amount}
+						{percentage.toFixed(0) + '%'}
 					</SVGText>
 				)
 			})
@@ -41,11 +39,11 @@ export default class Pie extends React.PureComponent {
 
 		return (
 			<PieChart
-				style={{ height: '40%' }}
+				style={{ height: '50%' }}
 				valueAccessor={({ item }) => item.amount}
 				data={data}
 				spacing={0}
-				innerRadius={'40%'}
+				innerRadius={'25%'}
 				outerRadius={'100%'}
 			>
 				<Labels/>
@@ -55,27 +53,56 @@ export default class Pie extends React.PureComponent {
 
 	render() {
 
-		if(moment(this.props.date).format('YYYY/MM/DD') in this.props.data) {
-			let data = this.props.data[moment(this.props.date).format('YYYY/MM/DD')].map( (item, index) => {
-				return (
+		console.log("Got", this.props.date);
+		if(moment(this.props.date).format('YYYY-MM-DD') in this.props.dailyTotals) {
+
+			let dailyTotalsObject = this.props.dailyTotals[moment(this.props.date).format('YYYY-MM-DD')];
+			let dailyTotalsData = [];
+			let total = 0;
+			for(let key in dailyTotalsObject) {
+				total += dailyTotalsObject[key];
+				let colorIndex = this.props.labels.indexOf(key);
+				dailyTotalsData.push(
 					{
-						key: index,
-						amount: item.time / 1000,
-						svg: { fill: this.colors[index] }
+						key: key,
+						amount: dailyTotalsObject[key],
+						svg: { fill: this.props.colors[colorIndex % this.props.colors.length]}
 					}
-				)
-			});
+				);
+			}
 
-			return this.draw(data);
+			// let data = this.props.data[moment(this.props.date).format('YYYY-MM-DD')].map( (item, index) => {
+			// 	return (
+			// 		{
+			// 			key: index,
+			// 			label: item.label,
+			// 			amount: item.time,
+			// 			svg: { fill: this.colors[index % 10] }
+			// 		}
+			// 	)
+			// });
+
+			// console.log("dailyTotalsObject =", dailyTotalsObject);
+			// console.log("Data = ",dailyTotalsData);
+			return this.draw(dailyTotalsData, total);
 		} else {
-			console.log("No data");
-			return <Text>You haven't entered any data for today!</Text>;
+			console.log("No data, took else");
+			// return <Text>You haven't entered any data for today!</Text>;
+			return (
+				this.draw(
+					[{
+						key: "No data!",
+						amount: 1,
+						svg: { fill: '#999999' }
+					}],
+				1)
+			)
 		}
-		// console.log(moment().format('YYYY/MM/DD'));
+		// console.log(moment().format('YYYY-MM-DD'));
 
-		// const data = Object.keys(this.props.data).map( (key, index) => {
+		// const data = Object.keys(this.props.dailyTotals).map( (key, index) => {
 		//
-		// 	// this.props.data[0].map(  )
+		// 	// this.props.dailyTotals[0].map(  )
 		//
 		// })
 
