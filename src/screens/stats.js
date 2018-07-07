@@ -37,12 +37,12 @@ export default class Stats extends Component {
 							<DailyStats {...pieProps} />
 						{/* </Content> */}
 					</Tab>
-					<Tab heading="Animated Pie">
+					{/* <Tab heading="Animated Pie">
 						<Content style={{flex: 1}}>
-							{/* <TimeChart {...pieProps} /> */}
+							<TimeChart {...pieProps} />
 							<Text>Hello</Text>
 						</Content>
-					</Tab>
+					</Tab> */}
 				</Tabs>
 				<Footer>
 					<FooterTabNav active="Stats" navigation={this.props.navigation}/>

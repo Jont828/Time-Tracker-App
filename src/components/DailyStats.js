@@ -24,8 +24,11 @@ export default class DailyStats extends Component {
 		console.log(this.props.selectedDate);
 		console.log(this.props.handleSelectDate === undefined);
 
+		let todaysTotals = this.props.dailyTotals[this.props.selectedDate];
+
 		return (
 			<View style={styles.wrapper}>
+
 				<DatePicker
 				   style={styles.datePicker}
 				   date={this.props.selectedDate}
@@ -41,41 +44,43 @@ export default class DailyStats extends Component {
 
 				<Pie {...this.props} date={this.props.selectedDate} style={styles.pie} />
 
-				<ScrollView style={styles.logWrapper}>
-					{
-						( this.props.selectedDate in this.props.data ) ? (
 
-							this.props.data[this.props.selectedDate].map( (entry, index) => {
+				<Content style={styles.logWrapper}>
+				{
+					( this.props.selectedDate in this.props.dailyTotals ) ? (
 
-								let colorIndex = this.props.labels.indexOf(entry.label);
+						Object.keys(todaysTotals).map( (key, index) => {
 
-								return (
-									<View style={styles.row} key={index}>
-										<Text style={styles.label}>
-											<Icon
-												active
-												style={[
-													{ color: this.props.colors[colorIndex] },
-													styles.listIcon,
-												]}
-												// type='Octicons'
-												// name='primitive-dot'
-												type='FontAwesome'
-												name='square'
-											/>  {entry.label}
-										</Text>
-										<Text style={styles.time}>{TimeFormatter(entry.time, true)}</Text>
-									</View>
-								)
-							})
-						) : (
-							 <Text>Rip no data for {this.props.selectedDate}</Text>
-						)
+							let colorIndex = this.props.labels.indexOf(key);
 
-					}
-				</ScrollView>
+							return (
+								<View style={styles.row} key={index}>
+									<Text style={styles.label}>
+										<Icon
+											active
+											style={[
+												{ color: this.props.colors[colorIndex] },
+												styles.listIcon,
+											]}
+											// type='Octicons'
+											// name='primitive-dot'
+											type='FontAwesome'
+											name='square'
+										/>  {key}
+									</Text>
+									<Text style={styles.time}>{TimeFormatter(todaysTotals[key], true)}</Text>
+								</View>
+							)
+						})
+					) : (
+						 <Text>Rip no dailyTotals for {this.props.selectedDate}</Text>
+					)
+
+				}
+				</Content>
 
 			</View>
+
 		);
 	}
 
@@ -85,6 +90,7 @@ const styles = StyleSheet.create({
 	pie: {
 		marginTop: 10,
 		marginBottom: 10,
+		flex: 1,
 	},
 	listIcon: {
 		fontSize: 16,
@@ -103,8 +109,8 @@ const styles = StyleSheet.create({
 	},
 	logWrapper: {
 		flex: 1,
-		// borderColor: 'red',
-		// borderWidth: 5,
+		borderColor: 'red',
+		borderWidth: 5,
 	},
 	row: {
 		flexDirection: 'row',

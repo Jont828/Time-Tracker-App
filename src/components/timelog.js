@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
+import { Icon, } from 'native-base';
 import Moment from 'react-moment';
 
 import { TimeFormatter } from './index.js';
@@ -11,6 +12,8 @@ export default class TimeLog extends Component {
 		return (
 			<View>
 				{Object.keys(this.props.listOfTimesWithLabels).sort().reverse().map( (key, index) => {
+
+
 					return (
 						<View key={key}>
 							{console.log(key)}
@@ -22,7 +25,7 @@ export default class TimeLog extends Component {
 							>
 								{key}
 							</Moment>
-							{TimeLogRowGroup(this.props.listOfTimesWithLabels[key])}
+							{ TimeLogRowGroup(this.props, key) }
 						</View>
 					) //if you have a bunch of keys value pair
 			    })}
@@ -32,14 +35,28 @@ export default class TimeLog extends Component {
 
 }
 
-function TimeLogRowGroup(timeArray) {
-
+function TimeLogRowGroup(props, date) {
 	return (
 		<View>
-			{timeArray.map( (entry, index) => {
+			{props.listOfTimesWithLabels[date].map( (entry, index) => {
+
+				let colorIndex = props.labels.indexOf(entry.label) % props.colors.length;
+
 				return (
 					<View style={styles.row} key={index}>
-						<Text style={styles.label}>{entry.label}</Text>
+						<Text style={styles.label}>
+							<Icon
+								active
+								style={{
+									color: props.colors[colorIndex],
+									fontSize: 16,
+								}}
+								// type='Octicons'
+								// name='primitive-dot'
+								type='FontAwesome'
+								name='square'
+							/>  {entry.label}
+						</Text>
 						<Text style={styles.time}>{TimeFormatter(entry.time, true)}</Text>
 					</View>
 				)

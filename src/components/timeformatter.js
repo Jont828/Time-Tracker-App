@@ -25,11 +25,11 @@ export default function TimeFormatter(milliseconds, verbose) {
 	let str = '';
 	if(verbose) {
 		if(hours > 0)
-			str +=  hours + 'h ';
+			str +=  hours + 'h';
 		if(minutes > 0)
-			str += minutes + 'm ';
+			str += ' ' + minutes + 'm';
 		if(seconds > 0)
-			str += seconds + 's';
+			str += ' ' + seconds + 's';
 
 	} else {
 		str = hours.padStart(2, "0") + ':' + minutes.padStart(2, "0") + ':' + seconds.padStart(2, "0");

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { createSwitchNavigator, createBottomTabNavigator } from 'react-navigation';
+import { AsyncStorage } from 'react-native';
 import Moment from 'react-moment';
 import moment from 'moment';
 
@@ -26,7 +27,7 @@ export default class App extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const initialLabels = [
+		this.initialLabels = [
 			'Lecture',
 			'Homework',
 			'Commuting',
@@ -34,6 +35,9 @@ export default class App extends React.Component {
 			'Internet',
 			'Gym',
 		];
+
+
+		// initialLabels = (storedLabels !== null) ? storedLabels : initialLabels;
 
 		let colorList = [
 			"#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
@@ -54,35 +58,37 @@ export default class App extends React.Component {
 		// ];
 
 		let initialTimes = {};
-		initialTimes['1999-08-28'] = [
-			{label: initialLabels[0], time: 3599000},
-			{label: initialLabels[1], time: 59000},
-			{label: initialLabels[2], time: 1000000},
-			{label: initialLabels[3], time: 860000},
-			{label: initialLabels[4], time: 10000000},
-		];
-		initialTimes['2018-07-01'] = [
-			{label: initialLabels[4], time: 20000000},
-			{label: initialLabels[0], time: 3599000},
-			{label: initialLabels[1], time: 59000},
-			{label: initialLabels[2], time: 1000000},
-			{label: initialLabels[3], time: 860000},
-			{label: initialLabels[4], time: 10000000},
-		];
-
+		// initialTimes['1999-08-28'] = [
+		// 	{label: initialLabels[0], time: 3599000},
+		// 	{label: initialLabels[1], time: 59000},
+		// 	{label: initialLabels[2], time: 1000000},
+		// 	{label: initialLabels[3], time: 860000},
+		// 	{label: initialLabels[4], time: 10000000},
+		// ];
+		// initialTimes['2018-07-05'] = [
+		// 	{label: initialLabels[4], time: 20000000},
+		// 	{label: initialLabels[0], time: 3599000},
+		// 	{label: initialLabels[1], time: 59000},
+		// 	{label: initialLabels[2], time: 1000000},
+		// 	{label: initialLabels[3], time: 860000},
+		// 	{label: initialLabels[4], time: 10000000},
+		// ];
+		//
 		let initialTotals = {};
-		initialTotals['2018-07-01'] = {};
-		let entry = initialTotals['2018-07-01'];
-		entry[initialLabels[0]] = 3599000;
-		entry[initialLabels[1]] = 59000;
-		entry[initialLabels[2]] = 1000000;
-		entry[initialLabels[3]] = 860000;
-		entry[initialLabels[4]] = 30000000;
+		// initialTotals['2018-07-05'] = {};
+		// let entry = initialTotals['2018-07-05'];
+		// entry[initialLabels[0]] = 3599000;
+		// entry[initialLabels[1]] = 59000;
+		// entry[initialLabels[2]] = 1000000;
+		// entry[initialLabels[3]] = 860000;
+		// entry[initialLabels[4]] = 30000000;
+
+
 
 		this.state = {
-			labels: initialLabels,
+			labels: this.initialLabels,
 			colors: colorList,
-			selectedLabelIndex: (initialLabels.length / 2),
+			selectedLabelIndex: (this.initialLabels.length / 2),
 			listOfTimesWithLabels: initialTimes,
 			totalTimesForEachLabel: initialTotals,
 			selectedDate: moment().format("YYYY-MM-DD"),
@@ -97,7 +103,75 @@ export default class App extends React.Component {
 		this.recordTimesWithLabels = this.recordTimesWithLabels.bind(this);
 
 		this.handleSelectDate = this.handleSelectDate.bind(this);
+
+		this.handleReset = this.handleReset.bind(this);
 	}
+
+	componentDidMount() {
+		this.loadFromAsync('labels').then(
+			result => {
+				if(typeof result !== 'undefined' && result !== null) {
+					console.log("Got", result);
+					this.setState({
+						labels: result,
+					})
+				}
+			}
+		).catch(_ => {console.log("Failed to load from AsyncStorage")});
+		this.loadFromAsync('time-log').then(
+			result => {
+				if(typeof result !== 'undefined' && result !== null) {
+					console.log("Got", result);
+					this.setState({
+						listOfTimesWithLabels: result,
+					})
+				}
+			}
+		).catch(_ => {console.log("Failed to load from AsyncStorage")});
+		this.loadFromAsync('time-summary').then(
+			result => {
+				if(typeof result !== 'undefined' && result !== null) {
+					console.log("Got", result);
+					this.setState({
+						totalTimesForEachLabel: result,
+					})
+				}
+			}
+		).catch(_ => {console.log("Failed to load from AsyncStorage")});
+	}
+
+	//////////////////////////////////////
+	// Functions to handle AsyncStorage //
+	//////////////////////////////////////
+
+	storeToAsync = async (key, value) => {
+		try {
+			await AsyncStorage.setItem(key, JSON.stringify(value));
+			console.log("Stored to key:", key);
+		} catch (error) {
+			console.log("error syncing to async");
+		}
+	}
+
+	loadFromAsync = async (key) => {
+		try {
+			const value = await AsyncStorage.getItem(key);
+			if (value !== null) {
+				// We have data!!
+				console.log("Retrieved:", value);
+				console.log("Parsed into:", JSON.parse(value));
+				return JSON.parse(value);
+			}
+		} catch (error) {
+			// Error retrieving data
+			console.log("Couldn't find anything for ", key);
+			return null;
+		}
+	}
+
+	//////////////////////////////////////
+	// Functions to handle AsyncStorage //
+	//////////////////////////////////////
 
 	////////////////////////////////////////
 	// Functions to handle the label list //
@@ -105,9 +179,12 @@ export default class App extends React.Component {
 
 	handleAddLabel(label) {
 		console.log("Handling add label");
+		let labels = this.state.labels;
+		labels.push(label);
 		this.setState({
-			labels: this.state.labels.concat([label]),
-		})
+			labels: labels,
+		});
+		this.storeToAsync('labels', labels);
 	}
 
 	handleRenameLabel(newLabel, indexToReplace) {
@@ -117,6 +194,7 @@ export default class App extends React.Component {
 		this.setState({
 			labels: list
 		});
+		this.storeToAsync('labels', list);
 	}
 
 	handleDeleteLabel(indexToDelete) {
@@ -128,6 +206,7 @@ export default class App extends React.Component {
 		this.setState({
 			labels: list
 		});
+		this.storeToAsync('labels', list);
 	}
 
 	////////////////////////////////////////
@@ -195,7 +274,9 @@ export default class App extends React.Component {
 		this.setState({
 			listOfTimesWithLabels: totalList,
 			totalTimesForEachLabel: dailyTotalsList,
-		})
+		});
+		this.storeToAsync('time-log', totalList);
+		this.storeToAsync('time-summary', dailyTotalsList);
 		console.log(label, time);
 		// console.log(list);
 	}
@@ -211,6 +292,21 @@ export default class App extends React.Component {
 		});
 	}
 
+	handleReset() {
+		console.log("Handling reset");
+		try {
+			AsyncStorage.clear();
+		} catch(error) {
+			console.log("Couldn't reset app");
+		}
+		console.log("labels are", this.initialLabels);
+		this.setState({
+			labels: this.initialLabels,
+			listOfTimesWithLabels: {},
+			totalTimesForEachLabel: {},
+		});
+	}
+
 
 	render() {
 		const newProps = {
@@ -221,6 +317,7 @@ export default class App extends React.Component {
 			handlePickerSelect: this.handlePickerSelect,
 			recordTimesWithLabels: this.recordTimesWithLabels,
 			handleSelectDate: this.handleSelectDate,
+			handleReset: this.handleReset,
 		};
 		// console.log(newProps);
 		return <TabNavFooter

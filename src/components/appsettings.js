@@ -1,13 +1,13 @@
 'use strict';
 import React, { Component } from 'react';
-
 import {
 	AppRegistry,
 	StyleSheet,
 	Text,
 	View,
 	Image,
-	Alert
+	Alert,
+	AsyncStorage
 } from 'react-native';
 import SettingsList from 'react-native-settings-list';
 
@@ -37,7 +37,7 @@ export default class AppSettings extends Component {
 			<View style={{backgroundColor:'#EFEFF4',flex:1}}>
 					<SettingsList borderColor='#c8c7cc' defaultItemSize={50}>
 						<SettingsList.Header headerStyle={{marginTop:15}}/>
-						{this.state.toggleAuthView ?
+						{/* {this.state.toggleAuthView ?
 							<SettingsList.Item
 								icon={
 									<Image style={styles.imageStyle} source={require('./images/user.png')}/>
@@ -55,8 +55,8 @@ export default class AppSettings extends Component {
 								authPropsPW={{placeholder:'Password'}}
 								onPress={() => this.toggleAuthView()}
 							/>
-						}
-						<SettingsList.Header headerStyle={{marginTop:15}}/>
+						} */}
+						{/* <SettingsList.Header headerStyle={{marginTop:15}}/> */}
 
 						<SettingsList.Item
 							icon={
@@ -87,7 +87,20 @@ export default class AppSettings extends Component {
 						<SettingsList.Item
 							icon={<Image style={styles.imageStyle} source={require('./images/notifications.png')}/>}
 							title='Reset App Data'
-							onPress={() => Alert.alert('Resetting the app')}
+							onPress={() => { Alert.alert(
+								'Confirmation',
+								'Are you sure you want to reset the app?',
+								[
+									{
+										text: 'No',
+										style: 'cancel',
+									},
+									{
+										text    : 'Yes, I\'m sure',
+										onPress : this.props.handleReset
+									}
+								],
+							); }}
 						/>
 
 						<SettingsList.Header headerStyle={{marginTop:15}}/>
