@@ -14,7 +14,7 @@ export default class More extends Component {
 			<Container>
 				<HeaderTitle text="More" />
 
-				<AppSettings {...this.props.screenProps} />
+				<AppSettings {...this.props.screenProps} navigation={this.props.navigation} />
 
 				<Footer>
 					<FooterTabNav active="More" navigation={this.props.navigation}/>

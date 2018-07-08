@@ -27,7 +27,7 @@ export default class Pie extends React.PureComponent {
 						fill={'white'}
 						textAnchor={'middle'}
 						alignmentBaseline={'middle'}
-						fontSize={12 + Math.floor(6 * data.amount / total)}
+						fontSize={16 + Math.floor(16 * data.amount / total)}
 						stroke={'black'}
 						strokeWidth={0.2}
 					>
@@ -87,16 +87,17 @@ export default class Pie extends React.PureComponent {
 			return this.draw(dailyTotalsData, total);
 		} else {
 			console.log("No data, took else");
+			return <View />;
 			// return <Text>You haven't entered any data for today!</Text>;
-			return (
-				this.draw(
-					[{
-						key: "No data!",
-						amount: 1,
-						svg: { fill: '#999999' }
-					}],
-				1)
-			)
+			// return (
+			// 	this.draw(
+			// 		[{
+			// 			key: "No data!",
+			// 			amount: 1,
+			// 			svg: { fill: '#999999' }
+			// 		}],
+			// 	1)
+			// )
 		}
 		// console.log(moment().format('YYYY-MM-DD'));
 

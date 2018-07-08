@@ -1,30 +1,23 @@
-import FooterTabNav from './footertabnav.js';
-import HeaderTitle from './headertitle.js';
-import Stopwatch from './stopwatch.js';
-import ModifiedStopwatch from './modifiedstopwatch.js';
-import DynamicList from './dynamiclist.js';
-import AppSettings from './appsettings.js'
-import NativeBaseSwipeableList, { labelList } from './nativebaseswipeablelist.js';
-import LabelPicker from './picker.js';
-import TimeLog from './timelog.js';
-import TimeChart from './timechart.js';
-import Pie from './Pie.js';
+import FooterTabNav from './FooterTabNav.js';
+import HeaderTitle from './HeaderTitle.js';
+import AppStopwatch from './AppStopwatch.js';
+import AppSettings from './AppSettings.js'
+import SwipeableList, { labelList } from './SwipeableList.js';
+import LabelPicker from './Picker.js';
+import TimeLog from './TimeLog.js';
+import PieChart from './PieChart.js';
 import DailyStats from './DailyStats.js';
-import TimeFormatter from './timeformatter.js';
+import TimeFormatter from './TimeFormatter.js';
 
 export {
 	FooterTabNav,
 	HeaderTitle,
-	Stopwatch,
-	DynamicList,
 	AppSettings,
-	NativeBaseSwipeableList,
-	labelList,
-	ModifiedStopwatch,
+	SwipeableList,
+	AppStopwatch,
 	LabelPicker,
 	TimeLog,
-	TimeChart,
-	Pie,
+	PieChart,
 	DailyStats,
 	TimeFormatter,
 };

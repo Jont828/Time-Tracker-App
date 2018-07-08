@@ -5,7 +5,7 @@ import { Container, Header, Content, Footer, FooterTab, Button, Icon, Text, View
 import { labelList, LabelPicker, TimeFormatter } from './index.js';
 import IOSPicker from 'react-native-ios-picker';
 
-export default class ModifiedStopwatch extends Component {
+export default class AppStopwatch extends Component {
 
 	constructor(props) {
 		super(props);

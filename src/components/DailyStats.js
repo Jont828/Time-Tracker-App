@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, DatePickerIOS, ScrollView, } from 'react-native
 import DatePicker from 'react-native-datepicker';
 import { Content, Container, Icon } from 'native-base';
 
-import { Pie, TimeFormatter } from './index.js';
+import { PieChart, TimeFormatter } from './index.js';
 
 import moment from 'moment';
 
@@ -42,7 +42,7 @@ export default class DailyStats extends Component {
 				   // onDateChange={(date) => {this.setState({date: date})}}
 				 />
 
-				<Pie {...this.props} date={this.props.selectedDate} style={styles.pie} />
+				<PieChart {...this.props} date={this.props.selectedDate} style={styles.pie} />
 
 
 				<Content style={styles.logWrapper}>
@@ -73,7 +73,16 @@ export default class DailyStats extends Component {
 							)
 						})
 					) : (
-						 <Text>Rip no dailyTotals for {this.props.selectedDate}</Text>
+						<View style={styles.noData}>
+							<Icon name='pie-chart' type='FontAwesome' style={styles.noDataIcon}/>
+							{
+								( moment().isSame(this.props.selectedDate, 'day') ) ? (
+									<Text style={styles.noDataText}>Start the timer to record some data for today!</Text>
+								) : (
+									<Text style={styles.noDataText}>There's no data recorded for {moment(this.props.selectedDate).format('M/D/YY')}!</Text>
+								)
+							}
+						</View>
 					)
 
 				}
@@ -87,6 +96,24 @@ export default class DailyStats extends Component {
 }
 
 const styles = StyleSheet.create({
+	noData: {
+		alignItems: 'center',
+		marginTop: '15%',
+	},
+	noDataIcon: {
+		fontSize: 200,
+		color: '#ddd',
+		marginBottom: 30,
+		alignSelf: 'center',
+	},
+	noDataText: {
+		fontSize: 30,
+		color: '#ddd',
+		textAlign: 'center',
+		fontWeight: '300',
+		marginLeft: 30,
+		marginRight: 30,
+	},
 	pie: {
 		marginTop: 10,
 		marginBottom: 10,
@@ -98,6 +125,7 @@ const styles = StyleSheet.create({
 	},
 	datePicker: {
 		width: 200,
+		borderRadius: 15,
 		marginTop: 10,
 		alignSelf: 'center',
 		marginBottom: 10,
@@ -109,8 +137,6 @@ const styles = StyleSheet.create({
 	},
 	logWrapper: {
 		flex: 1,
-		borderColor: 'red',
-		borderWidth: 5,
 	},
 	row: {
 		flexDirection: 'row',

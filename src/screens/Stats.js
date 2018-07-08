@@ -26,16 +26,16 @@ export default class Stats extends Component {
 		return (
 			<Container>
 				<HeaderTitle text="Statistics" />
-				<Tabs initialPage={1}>
+				<Tabs initialPage={0}>
+					<Tab heading="Summary">
+						{/* <Content> */}
+						<DailyStats {...pieProps} />
+						{/* </Content> */}
+					</Tab>
 					<Tab heading="Daily Logs">
 					  <Content>
 							<TimeLog {...this.props.screenProps} />
 					  </Content>
-					</Tab>
-					<Tab heading="Summary">
-						{/* <Content> */}
-							<DailyStats {...pieProps} />
-						{/* </Content> */}
 					</Tab>
 					{/* <Tab heading="Animated Pie">
 						<Content style={{flex: 1}}>

@@ -9,7 +9,7 @@ export default class FooterTabNav extends Component {
 				<FooterButton active={this.props.active=="Timer"} 	tabLink="TimerScreen" icon="timer" text="Timer" navigation={this.props.navigation} />
 				<FooterButton active={this.props.active=="Stats"} 	tabLink="StatsScreen" icon="stats" text="Stats" navigation={this.props.navigation} />
 				<FooterButton active={this.props.active=="Labels"} 	tabLink="LabelsScreen" icon="pricetags" text="Labels" navigation={this.props.navigation} />
-				<FooterButton active={this.props.active=="More"} 	tabLink="MoreScreen" icon="menu" text="More" navigation={this.props.navigation} />
+				<FooterButton active={this.props.active=="More"} 	tabLink="MoreStack" icon="menu" text="More" navigation={this.props.navigation} />
 			</FooterTab>
 		);
 	}

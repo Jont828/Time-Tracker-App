@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
-import { createSwitchNavigator, createBottomTabNavigator } from 'react-navigation';
+import { createSwitchNavigator, createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import { AsyncStorage } from 'react-native';
 import Moment from 'react-moment';
 import moment from 'moment';
 
-import { Timer, Stats, Labels, More } from './screens/index.js';
+import { Timer, Stats, Labels, More, License } from './screens/index.js';
 
 const TabNavFooter = createSwitchNavigator(
 	{
 		TimerScreen: { screen: Timer },
 		StatsScreen: { screen: Stats },
 		LabelsScreen: { screen: Labels },
-		MoreScreen: { screen: More },
+		// MoreScreen: { screen: More },
+		MoreStack: createStackNavigator({
+			MoreScreen: { screen: More },
+			LicenseScreen: { screen: License },
+		}, { initialRouteName: 'MoreScreen' })
 	},
 	{
 		initialRouteName: 'TimerScreen',

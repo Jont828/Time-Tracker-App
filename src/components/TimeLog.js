@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
-import { Icon, } from 'native-base';
+import { Icon } from 'native-base';
+import Accordion from 'react-native-collapsible/Accordion';
 import Moment from 'react-moment';
 
 import { TimeFormatter } from './index.js';
@@ -10,6 +11,12 @@ export default class TimeLog extends Component {
 	render() {
 		console.log("in TimeLog");
 		return (
+			// <Accordion
+			//   sections={SECTIONS}
+			//   renderSectionTitle={this._renderSectionTitle}
+			//   renderHeader={this._renderHeader}
+			//   renderContent={this._renderContent}
+			// />
 			<View>
 				{Object.keys(this.props.listOfTimesWithLabels).sort().reverse().map( (key, index) => {
 
